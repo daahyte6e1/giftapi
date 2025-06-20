@@ -19,8 +19,8 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>API Тестер</h1>
-        <p>Тестируйте эндпоинты прямо с мобильного устройства</p>
+        <h1>Gift api</h1>
+        <p>Все о подарках тут</p>
       </header>
       
       <main className="App-main">
