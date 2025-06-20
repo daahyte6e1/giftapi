@@ -57,94 +57,95 @@ const CollectibleCard: React.FC<CollectibleCardProps> = ({ collectible }) => {
     const attributesOrder = ['MODEL', 'BACKDROP', 'SYMBOL'];
 
     return (
-        <div className="collectible-card">
-            {/* Блок с ценами маркетплейсов */}
-            {collectible.providers && (
-                <div className="providers-container">
-                    <h3 className="providers-title">Цены на маркетплейсах</h3>
-                    <div className="providers-grid">
-                        {Object.entries(collectible.providers).map(([provider, data]) => (
-                            <div key={provider} className="provider-item">
-                                <span className="provider-name">{provider.toUpperCase()}</span>
-                                <span className="provider-price">{data.collection_floor} TON</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            )}
-
-            <div className="media-section">
-                <div className="media-container" style={{backgroundColor: '#e6c381'}}>
-                    <img 
-                        src={collectible.media.pics.large} 
-                        alt={collectible.telegram_gift_title}
-                        className="collectible-image"
-                    />
-                    {lottieAnimation && (
-                        <div className={`lottie-player ${isLottieLoaded ? 'loaded' : ''}`}>
-                             <Lottie
-                                animationData={lottieAnimation}
-                                onDOMLoaded={handleLottieLoad}
-                                loop={true}
-                             />
+        <div className="collectible-card-container">
+            <div className="collectible-card">
+                {/* Блок с ценами маркетплейсов */}
+                {collectible.providers && (
+                    <div className="providers-container">
+                        <h3 className="providers-title">Цены на маркетплейсах</h3>
+                        <div className="providers-grid">
+                            {Object.entries(collectible.providers).map(([provider, data]) => (
+                                <div key={provider} className="provider-item">
+                                    <span className="provider-name">{provider.toUpperCase()}</span>
+                                    <span className="provider-price">{data.collection_floor} TON</span>
+                                </div>
+                            ))}
                         </div>
-                    )}
-                </div>
-                
-                {/* Блок с тремя изображениями справа */}
-                <div className="images-sidebar">
-                    <div className="image-item">
+                    </div>
+                )}
+
+                <div className="media-section">
+                    <div className="media-container" style={{backgroundColor: '#e6c381'}}>
                         <img 
                             src={collectible.media.pics.large} 
-                            alt="Large"
-                            className="sidebar-image"
+                            alt={collectible.telegram_gift_title}
+                            className="collectible-image"
                         />
-                        <span className="image-label">Large</span>
-                    </div>
-                    <div className="image-item">
-                        <img 
-                            src={collectible.media.pics.medium} 
-                            alt="Medium"
-                            className="sidebar-image"
-                        />
-                        <span className="image-label">Medium</span>
-                    </div>
-                    <div className="image-item">
-                        <img 
-                            src={collectible.media.pics.small} 
-                            alt="Small"
-                            className="sidebar-image"
-                        />
-                        <span className="image-label">Small</span>
+                        {lottieAnimation && (
+                            <div className={`lottie-player ${isLottieLoaded ? 'loaded' : ''}`}>
+                                <Lottie
+                                    animationData={lottieAnimation}
+                                    onDOMLoaded={handleLottieLoad}
+                                    loop={true}
+                                />
+                            </div>
+                        )}
                     </div>
                 </div>
-            </div>
 
-            <div className='info-container'>
-                <h2 className="title">{collectible.telegram_gift_title}</h2>
-                <p className="collectible-id">Collectible #{collectible.telegram_gift_number}</p>
+                <div className='info-container'>
+                    <h2 className="title">{collectible.telegram_gift_title}</h2>
+                    <p className="collectible-id">Collectible #{collectible.telegram_gift_number}</p>
 
-                <table className="attributes-table">
-                    <tbody>
-                        {attributesOrder.map(attrKey => {
-                            const attribute = collectible.attributes[attrKey];
-                            if (!attribute) return null;
-                            return (
-                                <tr className="attribute-row" key={attrKey}>
-                                    <td className="attribute-name">{attrKey.charAt(0) + attrKey.slice(1).toLowerCase()}</td>
-                                    <td className="attribute-value">
-                                        {attribute.name}
-                                        <span className="rarity">{attribute.readable_rarity}%</span>
-                                    </td>
-                                </tr>
-                            )
-                        })}
-                        <tr className="attribute-row">
-                            <td className="attribute-name">Quantity</td>
-                            <td className="attribute-value">{formatNumber(collectible.telegram_gift_number)}/{formatNumber(collectible.total_amount)} issued</td>
-                        </tr>
-                    </tbody>
-                </table>
+                    <table className="attributes-table">
+                        <tbody>
+                            {attributesOrder.map(attrKey => {
+                                const attribute = collectible.attributes[attrKey];
+                                if (!attribute) return null;
+                                return (
+                                    <tr className="attribute-row" key={attrKey}>
+                                        <td className="attribute-name">{attrKey.charAt(0) + attrKey.slice(1).toLowerCase()}</td>
+                                        <td className="attribute-value">
+                                            {attribute.name}
+                                            <span className="rarity">{attribute.readable_rarity}%</span>
+                                        </td>
+                                    </tr>
+                                )
+                            })}
+                            <tr className="attribute-row">
+                                <td className="attribute-name">Quantity</td>
+                                <td className="attribute-value">{formatNumber(collectible.telegram_gift_number)}/{formatNumber(collectible.total_amount)} issued</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>          
+            {/* Блок с тремя изображениями справа */}
+            <div className="images-sidebar">
+                <div className="image-item">
+                    <img 
+                        src={collectible.media.pics.large} 
+                        alt="Large"
+                        className="sidebar-image"
+                    />
+                    <span className="image-label">Large</span>
+                </div>
+                <div className="image-item">
+                    <img 
+                        src={collectible.media.pics.medium} 
+                        alt="Medium"
+                        className="sidebar-image"
+                    />
+                    <span className="image-label">Medium</span>
+                </div>
+                <div className="image-item">
+                    <img 
+                        src={collectible.media.pics.small} 
+                        alt="Small"
+                        className="sidebar-image"
+                    />
+                    <span className="image-label">Small</span>
+                </div>
             </div>
         </div>
     );

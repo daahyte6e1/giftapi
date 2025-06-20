@@ -1,3 +1,10 @@
+/* Контейнер для карточки и сайдбара */
+.collectible-card-container {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
 .collectible-card {
     background-color: #1a1a1a;
     border-radius: 16px;
@@ -6,6 +13,7 @@
     color: white;
     overflow: hidden;
     border: 1px solid #333;
+    flex-shrink: 0;
 }
 
 /* Блок с ценами маркетплейсов */
@@ -84,38 +92,50 @@
 
 /* Боковая панель с изображениями */
 .images-sidebar {
-    width: 80px;
+    width: 120px;
     background-color: #1a1a1a;
-    border-left: 1px solid #333;
+    border-radius: 16px;
+    border: 1px solid #333;
     display: flex;
     flex-direction: column;
+    padding: 12px;
+    gap: 12px;
+    flex-shrink: 0;
 }
 
 .image-item {
-    flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 8px;
-    border-bottom: 1px solid #333;
     position: relative;
 }
 
+.image-item:first-child {
+    flex: 4; /* large - 1 (4/4) */
+    min-height: 120px;
+}
+
+.image-item:nth-child(2) {
+    flex: 2; /* medium - 1/2 (2/4) */
+    min-height: 60px;
+}
+
 .image-item:last-child {
-    border-bottom: none;
+    flex: 1; /* small - 1/4 (1/4) */
+    min-height: 30px;
 }
 
 .sidebar-image {
     width: 100%;
-    height: 60px;
+    height: 100%;
     object-fit: cover;
-    border-radius: 6px;
-    margin-bottom: 4px;
+    border-radius: 8px;
+    margin-bottom: 6px;
 }
 
 .image-label {
-    font-size: 10px;
+    font-size: 11px;
     color: #aaa;
     font-weight: 500;
     text-align: center;
