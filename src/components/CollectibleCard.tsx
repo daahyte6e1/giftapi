@@ -58,6 +58,34 @@ const CollectibleCard: React.FC<CollectibleCardProps> = ({ collectible }) => {
 
     return (
         <div className="collectible-card-container">
+            {/* Блок с тремя изображениями сверху */}
+            <div className="images-sidebar">
+                <div className="image-item">
+                    <img 
+                        src={collectible.media.pics.large} 
+                        alt="Large"
+                        className="sidebar-image"
+                    />
+                    <span className="image-label">Large</span>
+                </div>
+                <div className="image-item">
+                    <img 
+                        src={collectible.media.pics.medium} 
+                        alt="Medium"
+                        className="sidebar-image"
+                    />
+                    <span className="image-label">Medium</span>
+                </div>
+                <div className="image-item">
+                    <img 
+                        src={collectible.media.pics.small} 
+                        alt="Small"
+                        className="sidebar-image"
+                    />
+                    <span className="image-label">Small</span>
+                </div>
+            </div>
+            
             <div className="collectible-card">
                 {/* Блок с ценами маркетплейсов */}
                 {collectible.providers && (
@@ -120,33 +148,6 @@ const CollectibleCard: React.FC<CollectibleCardProps> = ({ collectible }) => {
                     </table>
                 </div>
             </div>          
-            {/* Блок с тремя изображениями справа */}
-            <div className="images-sidebar">
-                <div className="image-item">
-                    <img 
-                        src={collectible.media.pics.large} 
-                        alt="Large"
-                        className="sidebar-image"
-                    />
-                    <span className="image-label">Large</span>
-                </div>
-                <div className="image-item">
-                    <img 
-                        src={collectible.media.pics.medium} 
-                        alt="Medium"
-                        className="sidebar-image"
-                    />
-                    <span className="image-label">Medium</span>
-                </div>
-                <div className="image-item">
-                    <img 
-                        src={collectible.media.pics.small} 
-                        alt="Small"
-                        className="sidebar-image"
-                    />
-                    <span className="image-label">Small</span>
-                </div>
-            </div>
         </div>
     );
 };

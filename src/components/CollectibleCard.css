@@ -1,6 +1,7 @@
 /* Контейнер для карточки и сайдбара */
 .collectible-card-container {
     display: flex;
+    flex-direction: column;
     gap: 16px;
     align-items: flex-start;
 }
@@ -92,12 +93,12 @@
 
 /* Боковая панель с изображениями */
 .images-sidebar {
-    width: 120px;
+    width: 100%;
     background-color: #1a1a1a;
     border-radius: 16px;
     border: 1px solid #333;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     padding: 12px;
     gap: 12px;
     flex-shrink: 0;
@@ -113,17 +114,17 @@
 
 .image-item:first-child {
     flex: 4; /* large - 1 (4/4) */
-    min-height: 120px;
+    min-width: 120px;
 }
 
 .image-item:nth-child(2) {
     flex: 2; /* medium - 1/2 (2/4) */
-    min-height: 60px;
+    min-width: 60px;
 }
 
 .image-item:last-child {
     flex: 1; /* small - 1/4 (1/4) */
-    min-height: 30px;
+    min-width: 30px;
 }
 
 .sidebar-image {
