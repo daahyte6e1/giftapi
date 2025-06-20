@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { Endpoint, EndpointRequest } from '../types';
 import './EndpointCard.css';
+import CollectibleCard from './CollectibleCard';
 
 interface EndpointCardProps {
   endpoint: Endpoint;
@@ -10,7 +10,7 @@ interface EndpointCardProps {
 const EndpointCard: React.FC<EndpointCardProps> = ({ endpoint }) => {
   const [name, setName] = useState('EasterEgg-1');
   const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<string>('');
+  const [response, setResponse] = useState<any>({});
   const [error, setError] = useState<string>('');
 
   const handleSubmit = async () => {
@@ -21,44 +21,88 @@ const EndpointCard: React.FC<EndpointCardProps> = ({ endpoint }) => {
 
     setLoading(true);
     setError('');
-    setResponse('');
+    setResponse({});
 
     try {
-      const method = endpoint.method || 'GET';
-      const config: any = {
+      const url = `${endpoint.url}?name=${encodeURIComponent(name)}`;
+      const result = await fetch(url, {
+        signal: AbortSignal.timeout(5000),
         headers: {
           'accept': '*/*',
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'X-API-Key': 'test'
         }
-      };
-
-      // Добавляем API ключ если он есть
-      if (endpoint.apiKey) {
-        config.headers['X-API-Key'] = endpoint.apiKey;
-      } else {
-        // Используем тестовый ключ по умолчанию
-        config.headers['X-API-Key'] = 'test';
-      }
-
-      let result;
+      });
       
-      if (method === 'GET') {
-        // Для GET запроса добавляем параметры в URL
-        const url = `${endpoint.url}?name=${encodeURIComponent(name)}`;
-        result = await axios.get(url, config);
-      } else {
-        // Для POST запроса отправляем данные в теле
-        const requestData: EndpointRequest = { name };
-        result = await axios.post(endpoint.url, requestData, config);
+      if (!result.ok) {
+        throw new Error(`HTTP error! status: ${result.status}`);
       }
       
-      setResponse(JSON.stringify(result.data, null, 2));
+      const data = await result.json();
+      setResponse(data);
     } catch (err) {
-      if (axios.isAxiosError(err)) {
-        setError(`Ошибка: ${err.response?.data?.message || err.message}`);
+      if (err instanceof Error) {
+        setError(`Ошибка: ${err.message}`);
       } else {
         setError('Произошла неизвестная ошибка');
       }
+      setResponse({
+        "attributes": {
+          "BACKDROP": {
+            "name": "Hunter Green",
+            "rarity": 12,
+            "readable_rarity": 1.2
+          },
+          "MODEL": {
+            "name": "Red Whelp",
+            "rarity": 5,
+            "readable_rarity": 0.5
+          },
+          "SYMBOL": {
+            "name": "Moose Head",
+            "rarity": 5,
+            "readable_rarity": 0.5
+          }
+        },
+        "collectible_id": 1,
+        "id": 1707,
+        "last_updated_at": "2025-06-20T14:46:15Z",
+        "market_floor": {
+          "avg": 4.673,
+          "max": 6,
+          "min": 3.8
+        },
+        "media": {
+          "lottie_anim": "https://nft.fragment.com/gift/easteregg-1.lottie.json",
+          "pics": {
+            "large": "https://nft.fragment.com/gift/easteregg-1.large.jpg",
+            "medium": "https://nft.fragment.com/gift/easteregg-1.medium.jpg",
+            "small": "https://nft.fragment.com/gift/easteregg-1.small.jpg"
+          }
+        },
+        "media_preview": "https://nft.fragment.com/gift/easteregg-1.medium.jpg",
+        "providers": {
+          "fragment": {
+            "collection_floor": 6
+          },
+          "mrkt": {
+            "collection_floor": 4.59
+          },
+          "portals": {
+            "collection_floor": 4.3
+          },
+          "tonnel": {
+            "collection_floor": 3.8
+          }
+        },
+        "rarity_index": 3e-05,
+        "telegram_gift_id": 5774079931671642755,
+        "telegram_gift_name": "EasterEgg-1",
+        "telegram_gift_number": 150212,
+        "telegram_gift_title": "Easter Egg",
+        "telegram_nft_url": "https://t.me/nft/EasterEgg-1",
+        "total_amount": 173176
+      })
     } finally {
       setLoading(false);
     }
@@ -81,7 +125,7 @@ const EndpointCard: React.FC<EndpointCardProps> = ({ endpoint }) => {
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="Введите имя"
+            placeholder="Введите имя подарка. Например: EasterEgg-1"
             disabled={loading}
           />
         </div>
@@ -101,11 +145,8 @@ const EndpointCard: React.FC<EndpointCardProps> = ({ endpoint }) => {
         </div>
       )}
 
-      {response && (
-        <div className="response-section">
-          <h4>Ответ:</h4>
-          <pre className="response-data">{response}</pre>
-        </div>
+      {response && Object.keys(response).length > 0 && (
+        <CollectibleCard collectible={response} />
       )}
     </div>
   );
