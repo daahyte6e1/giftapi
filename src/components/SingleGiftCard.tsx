@@ -1,36 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Lottie from 'lottie-react';
 import './SingleGiftCard.css';
+import { Collectible } from '../types/index';
 
-interface Collectible {
-    attributes?: {
-        [key: string]: {
-            name: string;
-            rarity: number;
-            readable_rarity: number;
-        }
-    };
-    telegram_gift_title?: string;
-    telegram_gift_name?: string;
-    telegram_gift_number?: number;
-    total_amount?: number;
-    media?: {
-        lottie_anim: string;
-        pics: {
-            large: string;
-            medium: string;
-            small: string;
-        };
-    };
-    media_preview?: string;
-    providers?: {
-        [key: string]: {
-            collection_floor: number;
-        };
-    };
-    rarity_index?: number;
-    id?: number;
-}
 
 interface SingleGiftCardProps {
   collectible: Collectible;
@@ -102,14 +74,14 @@ const SingleGiftCard: React.FC<SingleGiftCardProps> = ({ collectible }) => {
                             {Object.entries(collectible.providers).map(([provider, data]) => (
                                 <div key={provider} className="provider-item">
                                     <span className="provider-name">{provider.toUpperCase()}</span>
-                                    <span className="provider-price">{data.collection_floor} TON</span>
+                                    <span className="provider-price">{(data as { collection_floor: number }).collection_floor} TON</span>
                                 </div>
                             ))}
                         </div>
                     </div>
                 )}
 
-                {collectible.media && (
+                {collectible.media && collectible.media.pics && (
                     <div className="media-section">
                         <div className="media-container" style={{backgroundColor: '#e6c381'}}>
                             <img 

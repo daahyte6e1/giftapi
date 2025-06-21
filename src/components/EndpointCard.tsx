@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Endpoint, EndpointParameter } from '../types';
+import { Collectible, Endpoint } from '../types/index';
 import './EndpointCard.css';
 import SingleGiftCard from './SingleGiftCard';
 import GiftListCard from './GiftListCard';
@@ -16,7 +16,8 @@ const EndpointCard: React.FC<EndpointCardProps> = ({ endpoint }) => {
   const [limit, setLimit] = useState(5);
   const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<any>({});
+  const [singleGift, setSingleGift] = useState<any>({});
+  const [userGiftList, setUserGiftList] = useState<Collectible[]>([]);
   const [error, setError] = useState<string>('');
 
   const toggleExpanded = () => {
@@ -66,7 +67,8 @@ const EndpointCard: React.FC<EndpointCardProps> = ({ endpoint }) => {
 
     setLoading(true);
     setError('');
-    setResponse({});
+    setSingleGift({});
+    setUserGiftList([]);
 
     try {
       const url = buildUrl();
@@ -84,7 +86,13 @@ const EndpointCard: React.FC<EndpointCardProps> = ({ endpoint }) => {
       }
       
       const data = await result.json();
-      setResponse(data);
+      console.log(data, 'xxxxx');
+
+      if (Array.isArray(data)) {
+        setUserGiftList(data.filter((item: Collectible) => item.id));
+      } else {
+        setSingleGift(data);
+      }
     } catch (err) {
       if (err instanceof Error) {
         setError(`Ошибка: ${err.message}`);
@@ -97,16 +105,16 @@ const EndpointCard: React.FC<EndpointCardProps> = ({ endpoint }) => {
   };
 
   const renderResponse = () => {
-    if (Object.keys(response).length === 0) {
+    if (Object.keys(singleGift).length === 0) {
       return null;
     }
 
     // Для эндпоинта get_gift_by_user используем GiftListCard
     if (endpoint.url.includes('get_gift_by_user')) {
-      return <GiftListCard giftList={response} />;
+      return <GiftListCard giftList={userGiftList} />;
     } else {
       // Для остальных эндпоинтов используем SingleGiftCard
-      return <SingleGiftCard collectible={response} />;
+      return <SingleGiftCard collectible={singleGift} />;
     }
   };
 

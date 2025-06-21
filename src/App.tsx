@@ -27,7 +27,7 @@ function App() {
           type: 'string',
           required: true,
           description: 'Имя пользователя',
-          defaultValue: 'xsrub'
+          defaultValue: ''
         },
         {
           name: 'limit',

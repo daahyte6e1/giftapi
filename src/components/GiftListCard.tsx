@@ -1,19 +1,6 @@
 import React from 'react';
+import { Collectible } from '../types';
 import './GiftListCard.css';
-
-interface Collectible {
-    id?: number;
-    telegram_gift_name?: string;
-    telegram_gift_title?: string;
-    media_preview?: string;
-    media?: {
-        pics: {
-            medium: string;
-        };
-    };
-    rarity_index?: number;
-    total_amount?: number;
-}
 
 interface GiftListResponse {
     gifts: Collectible[];
@@ -23,7 +10,7 @@ interface GiftListResponse {
 }
 
 interface GiftListCardProps {
-  giftList: GiftListResponse;
+  giftList: Collectible[];
 }
 
 const formatNumber = (num: number) => {
@@ -37,12 +24,12 @@ const GiftListCard: React.FC<GiftListCardProps> = ({ giftList }) => {
                 <h3>Список подарков пользователя</h3>
             </div>
             <div className="gifts-grid">
-                {giftList.gifts.map((gift, index) => (
+                {giftList.map((gift, index) => (
                     <div key={gift.id || index} className="gift-item">
                         <div className="gift-image">
                             <img 
-                                src={gift.media_preview || gift.media?.pics?.medium} 
-                                alt={gift.telegram_gift_name || gift.telegram_gift_title}
+                                src={gift.media_preview || gift.media?.pics?.medium || ''} 
+                                alt={gift.telegram_gift_name || gift.telegram_gift_title || 'Gift'}
                             />
                         </div>
                         <div className="gift-info">
