@@ -12,7 +12,7 @@ interface EndpointCardProps {
 const EndpointCard: React.FC<EndpointCardProps> = ({ endpoint }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [name, setName] = useState('EasterEgg-1');
-  const [username, setUsername] = useState('xsrub');
+  const [username, setUsername] = useState('');
   const [limit, setLimit] = useState(5);
   const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(false);
