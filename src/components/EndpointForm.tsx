@@ -36,7 +36,7 @@ const EndpointForm: React.FC<EndpointFormProps> = ({
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            placeholder="Введите имя пользователя. Например: xsrub"
+            placeholder="Введите имя пользователя."
             disabled={loading}
           />
         </div>
