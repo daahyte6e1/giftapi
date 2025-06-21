@@ -1,22 +1,67 @@
 import React, { useState } from 'react';
-import { Endpoint, EndpointRequest } from '../types';
+import { Endpoint, EndpointParameter } from '../types';
 import './EndpointCard.css';
-import CollectibleCard from './CollectibleCard';
+import SingleGiftCard from './SingleGiftCard';
+import GiftListCard from './GiftListCard';
+import EndpointForm from './EndpointForm';
 
 interface EndpointCardProps {
   endpoint: Endpoint;
 }
 
 const EndpointCard: React.FC<EndpointCardProps> = ({ endpoint }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
   const [name, setName] = useState('EasterEgg-1');
+  const [username, setUsername] = useState('xsrub');
+  const [limit, setLimit] = useState(5);
+  const [offset, setOffset] = useState(0);
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<any>({});
   const [error, setError] = useState<string>('');
 
+  const toggleExpanded = () => {
+    setIsExpanded(!isExpanded);
+  };
+
+  const buildUrl = () => {
+    let url = endpoint.url;
+    
+    // Для эндпоинта get_gift_by_user
+    if (endpoint.url.includes('get_gift_by_user')) {
+      const params = new URLSearchParams();
+      params.append('username', username);
+      params.append('limit', limit.toString());
+      params.append('offset', offset.toString());
+      url = `${url}?${params.toString()}`;
+    } else {
+      // Для остальных эндпоинтов (обратная совместимость)
+      url = `${endpoint.url}?name=${encodeURIComponent(name)}`;
+    }
+    
+    return url;
+  };
+
   const handleSubmit = async () => {
-    if (!name.trim()) {
-      setError('Пожалуйста, введите имя');
-      return;
+    // Валидация для get_gift_by_user
+    if (endpoint.url.includes('get_gift_by_user')) {
+      if (!username.trim()) {
+        setError('Пожалуйста, введите имя пользователя');
+        return;
+      }
+      if (limit < 1 || limit > 100) {
+        setError('Лимит должен быть от 1 до 100');
+        return;
+      }
+      if (offset < 0) {
+        setError('Смещение должно быть неотрицательным');
+        return;
+      }
+    } else {
+      // Валидация для остальных эндпоинтов
+      if (!name.trim()) {
+        setError('Пожалуйста, введите имя');
+        return;
+      }
     }
 
     setLoading(true);
@@ -24,9 +69,9 @@ const EndpointCard: React.FC<EndpointCardProps> = ({ endpoint }) => {
     setResponse({});
 
     try {
-      const url = `${endpoint.url}?name=${encodeURIComponent(name)}`;
+      const url = buildUrl();
       const result = await fetch(url, {
-        signal: AbortSignal.timeout(5000),
+        signal: AbortSignal.timeout(20000),
         headers: {
           'accept': '*/*',
           'Content-Type': 'application/json',
@@ -46,107 +91,80 @@ const EndpointCard: React.FC<EndpointCardProps> = ({ endpoint }) => {
       } else {
         setError('Произошла неизвестная ошибка');
       }
-      setResponse({
-        "attributes": {
-          "BACKDROP": {
-            "name": "Hunter Green",
-            "rarity": 12,
-            "readable_rarity": 1.2
-          },
-          "MODEL": {
-            "name": "Red Whelp",
-            "rarity": 5,
-            "readable_rarity": 0.5
-          },
-          "SYMBOL": {
-            "name": "Moose Head",
-            "rarity": 5,
-            "readable_rarity": 0.5
-          }
-        },
-        "collectible_id": 1,
-        "id": 1707,
-        "last_updated_at": "2025-06-20T14:46:15Z",
-        "market_floor": {
-          "avg": 4.673,
-          "max": 6,
-          "min": 3.8
-        },
-        "media": {
-          "lottie_anim": "https://nft.fragment.com/gift/easteregg-1.lottie.json",
-          "pics": {
-            "large": "https://nft.fragment.com/gift/easteregg-1.large.jpg",
-            "medium": "https://nft.fragment.com/gift/easteregg-1.medium.jpg",
-            "small": "https://nft.fragment.com/gift/easteregg-1.small.jpg"
-          }
-        },
-        "media_preview": "https://nft.fragment.com/gift/easteregg-1.medium.jpg",
-        "providers": {
-          "fragment": {
-            "collection_floor": 6
-          },
-          "mrkt": {
-            "collection_floor": 4.59
-          },
-          "portals": {
-            "collection_floor": 4.3
-          },
-          "tonnel": {
-            "collection_floor": 3.8
-          }
-        },
-        "rarity_index": 3e-05,
-        "telegram_gift_id": 5774079931671642755,
-        "telegram_gift_name": "EasterEgg-1",
-        "telegram_gift_number": 150212,
-        "telegram_gift_title": "Easter Egg",
-        "telegram_nft_url": "https://t.me/nft/EasterEgg-1",
-        "total_amount": 173176
-      })
     } finally {
       setLoading(false);
     }
   };
 
+  const renderResponse = () => {
+    if (Object.keys(response).length === 0) {
+      return null;
+    }
+
+    // Для эндпоинта get_gift_by_user используем GiftListCard
+    if (endpoint.url.includes('get_gift_by_user')) {
+      return <GiftListCard giftList={response} />;
+    } else {
+      // Для остальных эндпоинтов используем SingleGiftCard
+      return <SingleGiftCard collectible={response} />;
+    }
+  };
+
   return (
     <div className="endpoint-card">
-      <div className="endpoint-header">
-        <h3 className="endpoint-name">{endpoint.name}</h3>
-        <p className="endpoint-url">{endpoint.url}</p>
-        <p className="endpoint-description">{endpoint.description}</p>
-        <p className="endpoint-method">Метод: {endpoint.method || 'GET'}</p>
+      <div className="endpoint-header" onClick={toggleExpanded}>
+        <div className="endpoint-info">
+          <h3 className="endpoint-name">{endpoint.name}</h3>
+        </div>
+        <div className="endpoint-toggle">
+          <span className={`toggle-icon ${isExpanded ? 'expanded' : ''}`}>
+            ▼
+          </span>
+        </div>
       </div>
       
-      <div className="endpoint-form">
-        <div className="input-group">
-          <label htmlFor={`name-${endpoint.id}`}>Имя:</label>
-          <input
-            id={`name-${endpoint.id}`}
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Введите имя подарка. Например: EasterEgg-1"
-            disabled={loading}
+      {isExpanded && (
+        <div className="endpoint-content">
+
+        <div className="endpoint-info">
+          <h3 className="endpoint-name">{endpoint.name}</h3>
+          <p className="endpoint-description">{endpoint.description}</p>
+          <div className="endpoint-meta">
+            <span className="endpoint-method">{endpoint.method}</span>
+            <span className="endpoint-url">{endpoint.url}</span>
+          </div>
+        </div>
+          <EndpointForm
+            endpoint={endpoint}
+            name={name}
+            setName={setName}
+            username={username}
+            setUsername={setUsername}
+            limit={limit}
+            setLimit={setLimit}
+            offset={offset}
+            setOffset={setOffset}
+            loading={loading}
           />
+          
+          <div className="endpoint-actions">
+            <button 
+              className="submit-button"
+              onClick={handleSubmit}
+              disabled={loading}
+            >
+              {loading ? 'Загрузка...' : 'Отправить запрос'}
+            </button>
+          </div>
+          
+          {error && (
+            <div className="error-message">
+              {error}
+            </div>
+          )}
+          
+          {renderResponse()}
         </div>
-        
-        <button 
-          onClick={handleSubmit}
-          disabled={loading || !name.trim()}
-          className="submit-button"
-        >
-          {loading ? 'Отправка...' : 'Отправить запрос'}
-        </button>
-      </div>
-
-      {error && (
-        <div className="error-message">
-          {error}
-        </div>
-      )}
-
-      {response && Object.keys(response).length > 0 && (
-        <CollectibleCard collectible={response} />
       )}
     </div>
   );

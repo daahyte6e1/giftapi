@@ -13,6 +13,37 @@ function App() {
       description: 'GET запрос для получения подарка по имени с API ключом',
       method: 'GET',
       apiKey: 'test'
+    },
+    {
+      id: '2',
+      name: 'Подарки пользователя',
+      url: 'https://giftasset.pro/api/v1/gifts/get_gift_by_user',
+      description: 'GET запрос для получения списка подарков пользователя с параметрами username, limit, offset',
+      method: 'GET',
+      apiKey: 'test',
+      parameters: [
+        {
+          name: 'username',
+          type: 'string',
+          required: true,
+          description: 'Имя пользователя',
+          defaultValue: 'xsrub'
+        },
+        {
+          name: 'limit',
+          type: 'number',
+          required: false,
+          description: 'Количество подарков (1-100)',
+          defaultValue: 5
+        },
+        {
+          name: 'offset',
+          type: 'number',
+          required: false,
+          description: 'Смещение от начала списка',
+          defaultValue: 0
+        }
+      ]
     }
   ];
 
