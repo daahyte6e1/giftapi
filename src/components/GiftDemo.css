@@ -1,0 +1,43 @@
+.gift-demo {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.demo-header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding: 30px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 20px;
+  color: white;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.demo-header h2 {
+  margin: 0 0 15px 0;
+  font-size: 32px;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.demo-header p {
+  margin: 0;
+  font-size: 18px;
+  opacity: 0.9;
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .demo-header {
+    padding: 20px;
+  }
+  
+  .demo-header h2 {
+    font-size: 24px;
+  }
+  
+  .demo-header p {
+    font-size: 16px;
+  }
+} 

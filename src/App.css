@@ -55,6 +55,18 @@ body {
   max-width: 100%;
 }
 
+.endpoints-section {
+  margin-top: 40px;
+}
+
+.endpoints-section h2 {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 30px;
+}
+
 .endpoints-list {
   max-width: 600px;
   margin: 0 auto;
@@ -76,6 +88,11 @@ body {
   
   .App-main {
     padding: 12px;
+  }
+  
+  .endpoints-section h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
   }
 }
 

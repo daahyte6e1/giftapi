@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import Modal from 'react-modal';
 import EndpointCard from './components/EndpointCard';
 import { Endpoint } from './types';
 import './App.css';
 
 function App() {
+  // Настройка Modal для доступности
+  useEffect(() => {
+    Modal.setAppElement('#root');
+  }, []);
+
   // Пример данных эндпоинтов
   const endpoints: Endpoint[] = [
     {
