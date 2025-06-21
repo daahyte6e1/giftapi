@@ -86,7 +86,6 @@ const EndpointCard: React.FC<EndpointCardProps> = ({ endpoint }) => {
       }
       
       const data = await result.json();
-      console.log(data, 'xxxxx');
 
       if (Array.isArray(data)) {
         setUserGiftList(data.filter((item: Collectible) => item.id));
@@ -105,7 +104,7 @@ const EndpointCard: React.FC<EndpointCardProps> = ({ endpoint }) => {
   };
 
   const renderResponse = () => {
-    if (Object.keys(singleGift).length === 0) {
+    if (Object.keys(singleGift).length === 0 && userGiftList.length === 0) {
       return null;
     }
 
