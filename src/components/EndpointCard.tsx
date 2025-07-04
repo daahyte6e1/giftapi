@@ -4,6 +4,7 @@ import './EndpointCard.css';
 import SingleGiftCard from './SingleGiftCard';
 import GiftListCard from './GiftListCard';
 import EndpointForm from './EndpointForm';
+import JsonResponseCard from './JsonResponseCard';
 
 interface EndpointCardProps {
   endpoint: Endpoint;
@@ -168,6 +169,14 @@ const EndpointCard: React.FC<EndpointCardProps> = ({ endpoint }) => {
             <div className="error-message">
               {error}
             </div>
+          )}
+
+          {/* JSON-ответ */}
+          {(!endpoint.url.includes('get_gift_by_user') && Object.keys(singleGift).length > 0) && (
+            <JsonResponseCard data={singleGift} />
+          )}
+          {(endpoint.url.includes('get_gift_by_user') && userGiftList.length > 0) && (
+            <JsonResponseCard data={userGiftList} />
           )}
           
           {renderResponse()}
