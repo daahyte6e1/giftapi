@@ -12,6 +12,8 @@ interface EndpointFormProps {
   offset: number;
   setOffset: (offset: number) => void;
   loading: boolean;
+  models: string;
+  setModels: (models: string) => void;
 }
 
 const EndpointForm: React.FC<EndpointFormProps> = ({
@@ -24,7 +26,9 @@ const EndpointForm: React.FC<EndpointFormProps> = ({
   setLimit,
   offset,
   setOffset,
-  loading
+  loading,
+  models,
+  setModels
 }) => {
   if (endpoint.url.includes('get_gift_by_user')) {
     return (
@@ -62,6 +66,21 @@ const EndpointForm: React.FC<EndpointFormProps> = ({
             value={offset}
             onChange={(e) => setOffset(Number(e.target.value))}
             min="0"
+            disabled={loading}
+          />
+        </div>
+      </div>
+    );
+  } else if (endpoint.url.includes('get_gifts_price_list')) {
+    return (
+      <div className="endpoint-form">
+        <div className="input-group">
+          <label style={{width: '70%'}} htmlFor={`models-${endpoint.id}`}>Включить вложенные модели:</label>
+          <input
+            id={`models-${endpoint.id}`}
+            type="checkbox"
+            checked={models === 'true'}
+            onChange={e => setModels(e.target.checked ? 'true' : 'false')}
             disabled={loading}
           />
         </div>

@@ -55,3 +55,33 @@ export interface Collectible {
     rarity_index?: number;
     id?: number;
 }
+
+// Тип для floors (collection_floors)
+export interface CollectionFloors {
+  [collection: string]: {
+    fragment: number;
+    last_update: string;
+    mrkt: number;
+    portals: number;
+    tonnel: number;
+  };
+}
+
+// Тип для models_prices
+export interface ModelsPrices {
+  [collection: string]: {
+    [model: string]: {
+      [market: string]: {
+        [period: string]: {
+          [timestamp: string]: number | null;
+        };
+      };
+    };
+  };
+}
+
+// Основной тип ответа
+export interface GiftPriceListResponse {
+  collection_floors: CollectionFloors;
+  models_prices?: ModelsPrices;
+}

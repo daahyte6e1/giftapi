@@ -5,6 +5,7 @@ import SingleGiftCard from './SingleGiftCard';
 import GiftListCard from './GiftListCard';
 import EndpointForm from './EndpointForm';
 import JsonResponseCard from './JsonResponseCard';
+import GiftPriceListCard from './GiftPriceListCard';
 
 interface EndpointCardProps {
   endpoint: Endpoint;
@@ -16,6 +17,7 @@ const EndpointCard: React.FC<EndpointCardProps> = ({ endpoint }) => {
   const [username, setUsername] = useState('');
   const [limit, setLimit] = useState(5);
   const [offset, setOffset] = useState(0);
+  const [models, setModels] = useState('false');
   const [loading, setLoading] = useState(false);
   const [singleGift, setSingleGift] = useState<any>({});
   const [userGiftList, setUserGiftList] = useState<Collectible[]>([]);
@@ -27,24 +29,23 @@ const EndpointCard: React.FC<EndpointCardProps> = ({ endpoint }) => {
 
   const buildUrl = () => {
     let url = endpoint.url;
-    
-    // Для эндпоинта get_gift_by_user
     if (endpoint.url.includes('get_gift_by_user')) {
       const params = new URLSearchParams();
       params.append('username', username);
       params.append('limit', limit.toString());
       params.append('offset', offset.toString());
       url = `${url}?${params.toString()}`;
+    } else if (endpoint.url.includes('get_gifts_price_list')) {
+      const params = new URLSearchParams();
+      params.append('models', models);
+      url = `${url}?${params.toString()}`;
     } else {
-      // Для остальных эндпоинтов (обратная совместимость)
       url = `${endpoint.url}?name=${encodeURIComponent(name)}`;
     }
-    
     return url;
   };
 
   const handleSubmit = async () => {
-    // Валидация для get_gift_by_user
     if (endpoint.url.includes('get_gift_by_user')) {
       if (!username.trim()) {
         setError('Пожалуйста, введите имя пользователя');
@@ -58,8 +59,9 @@ const EndpointCard: React.FC<EndpointCardProps> = ({ endpoint }) => {
         setError('Смещение должно быть неотрицательным');
         return;
       }
+    } else if (endpoint.url.includes('get_gifts_price_list')) {
+      // Нет обязательных полей, models всегда есть
     } else {
-      // Валидация для остальных эндпоинтов
       if (!name.trim()) {
         setError('Пожалуйста, введите имя');
         return;
@@ -81,14 +83,13 @@ const EndpointCard: React.FC<EndpointCardProps> = ({ endpoint }) => {
           'X-API-Key': 'test'
         }
       });
-      
       if (!result.ok) {
         throw new Error(`HTTP error! status: ${result.status}`);
       }
-      
       const data = await result.json();
-
-      if (Array.isArray(data)) {
+      if (endpoint.url.includes('get_gifts_price_list')) {
+        setSingleGift(data); // всегда объект
+      } else if (Array.isArray(data)) {
         setUserGiftList(data.filter((item: Collectible) => item.id));
       } else {
         setSingleGift(data);
@@ -108,12 +109,11 @@ const EndpointCard: React.FC<EndpointCardProps> = ({ endpoint }) => {
     if (Object.keys(singleGift).length === 0 && userGiftList.length === 0) {
       return null;
     }
-
-    // Для эндпоинта get_gift_by_user используем GiftListCard
     if (endpoint.url.includes('get_gift_by_user')) {
       return <GiftListCard giftList={userGiftList} />;
+    } else if (endpoint.url.includes('get_gifts_price_list')) {
+      return <GiftPriceListCard data={singleGift} />;
     } else {
-      // Для остальных эндпоинтов используем SingleGiftCard
       return <SingleGiftCard collectible={singleGift} />;
     }
   };
@@ -125,23 +125,19 @@ const EndpointCard: React.FC<EndpointCardProps> = ({ endpoint }) => {
           <h3 className="endpoint-name">{endpoint.name}</h3>
         </div>
         <div className="endpoint-toggle">
-          <span className={`toggle-icon ${isExpanded ? 'expanded' : ''}`}>
-            ▼
-          </span>
+          <span className={`toggle-icon ${isExpanded ? 'expanded' : ''}`}>▼</span>
         </div>
       </div>
-      
       {isExpanded && (
         <div className="endpoint-content">
-
-        <div className="endpoint-info">
-          <h3 className="endpoint-name">{endpoint.name}</h3>
-          <p className="endpoint-description">{endpoint.description}</p>
-          <div className="endpoint-meta">
-            <span className="endpoint-method">{endpoint.method}</span>
-            <span className="endpoint-url">{endpoint.url}</span>
+          <div className="endpoint-info">
+            <h3 className="endpoint-name">{endpoint.name}</h3>
+            <p className="endpoint-description">{endpoint.description}</p>
+            <div className="endpoint-meta">
+              <span className="endpoint-method">{endpoint.method}</span>
+              <span className="endpoint-url">{endpoint.url}</span>
+            </div>
           </div>
-        </div>
           <EndpointForm
             endpoint={endpoint}
             name={name}
@@ -153,8 +149,9 @@ const EndpointCard: React.FC<EndpointCardProps> = ({ endpoint }) => {
             offset={offset}
             setOffset={setOffset}
             loading={loading}
+            models={models}
+            setModels={setModels}
           />
-          
           <div className="endpoint-actions">
             <button 
               className="submit-button"
@@ -164,21 +161,9 @@ const EndpointCard: React.FC<EndpointCardProps> = ({ endpoint }) => {
               {loading ? 'Загрузка...' : 'Отправить запрос'}
             </button>
           </div>
-          
           {error && (
-            <div className="error-message">
-              {error}
-            </div>
+            <div className="error-message">{error}</div>
           )}
-
-          {/* JSON-ответ */}
-          {(!endpoint.url.includes('get_gift_by_user') && Object.keys(singleGift).length > 0) && (
-            <JsonResponseCard data={singleGift} />
-          )}
-          {(endpoint.url.includes('get_gift_by_user') && userGiftList.length > 0) && (
-            <JsonResponseCard data={userGiftList} />
-          )}
-          
           {renderResponse()}
         </div>
       )}

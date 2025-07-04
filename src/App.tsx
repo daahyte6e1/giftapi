@@ -50,6 +50,23 @@ function App() {
           defaultValue: 0
         }
       ]
+    },
+    {
+      id: '3',
+      name: 'Цены на подарки (floors/models)',
+      url: 'https://giftasset.pro/api/v1/gifts/get_gifts_price_list',
+      description: 'GET запрос для получения информации по ценам подарков. Query параметр models (true/false) — если true, то вложенные модели, если false — только floors.',
+      method: 'GET',
+      apiKey: 'test',
+      parameters: [
+        {
+          name: 'models',
+          type: 'string',
+          required: true,
+          description: 'Включить вложенные модели (true/false)',
+          defaultValue: 'false'
+        }
+      ]
     }
   ];
 
