@@ -74,7 +74,7 @@ const EndpointForm: React.FC<EndpointFormProps> = ({
   } else if (endpoint.url.includes('get_gifts_price_list')) {
     return (
       <div className="endpoint-form">
-        <div className="input-group">
+        <div className="input-group" style={{display: 'flex'}}>
           <label style={{width: '70%'}} htmlFor={`models-${endpoint.id}`}>Включить вложенные модели:</label>
           <input
             id={`models-${endpoint.id}`}
