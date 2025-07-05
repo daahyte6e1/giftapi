@@ -57,12 +57,21 @@ const StreamingPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [expandedIdx, setExpandedIdx] = useState<number>(0);
   const wsRef = useRef<WebSocket | null>(null);
+  const pingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     setError(null);
     const ws = new WebSocket(WS_URL);
     wsRef.current = ws;
-    ws.onopen = () => setError(null);
+    ws.onopen = () => {
+      setError(null);
+      if (pingIntervalRef.current) clearInterval(pingIntervalRef.current);
+      pingIntervalRef.current = setInterval(() => {
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.send('ping');
+        }
+      }, 20000);
+    };
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
@@ -79,8 +88,20 @@ const StreamingPage: React.FC = () => {
       }
     };
     ws.onerror = () => setError('Ошибка WebSocket соединения');
-    ws.onclose = () => setError('WebSocket соединение закрыто');
-    return () => ws.close();
+    ws.onclose = () => {
+      setError('WebSocket соединение закрыто');
+      if (pingIntervalRef.current) {
+        clearInterval(pingIntervalRef.current);
+        pingIntervalRef.current = null;
+      }
+    };
+    return () => {
+      ws.close();
+      if (pingIntervalRef.current) {
+        clearInterval(pingIntervalRef.current);
+        pingIntervalRef.current = null;
+      }
+    };
   }, []);
 
   return (
