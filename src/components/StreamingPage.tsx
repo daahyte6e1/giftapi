@@ -70,10 +70,12 @@ const StreamingPage: React.FC = () => {
         if (ws.readyState === WebSocket.OPEN) {
           ws.send('ping');
         }
-      }, 20000);
+      }, 30000);
     };
     ws.onmessage = (event) => {
       try {
+        if (event.data === 'pong') return;
+
         const data = JSON.parse(event.data);
         if (data.event === 'new_sale') {
           setEvents(prev => {
@@ -83,7 +85,7 @@ const StreamingPage: React.FC = () => {
           });
           setExpandedIdx(0);
         }
-      } catch (e) {
+      } catch (e: any) {
         setError('Ошибка парсинга данных');
       }
     };
