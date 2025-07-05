@@ -1,0 +1,37 @@
+.sale-card-collapsed {
+  background: #f7fafc;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,152,234,0.08);
+  padding: 12px 18px;
+  display: flex;
+  flex-direction: column;
+  transition: background 0.2s, box-shadow 0.2s;
+  color: #222;
+}
+
+.sale-card-expanded {
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 4px 16px rgba(0,152,234,0.16);
+  padding: 18px 24px;
+  display: flex;
+  flex-direction: column;
+  transition: background 0.2s, box-shadow 0.2s;
+  color: #222;
+  border: 1.5px solid #0098EA;
+}
+
+.sale-card-collapsed:hover {
+  background: #eaf6fd;
+  box-shadow: 0 4px 16px rgba(0,152,234,0.12);
+}
+
+.sale-card-expanded img {
+  box-shadow: 0 2px 8px rgba(0,152,234,0.10);
+  background: #f2f6fa;
+}
+
+.sale-card-collapsed img {
+  filter: grayscale(0.1) brightness(1);
+  background: #f2f6fa;
+} 

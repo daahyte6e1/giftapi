@@ -1,12 +1,24 @@
 import React, { useEffect, useRef, useState } from 'react';
+import SaleEventCard from './SaleEventCard';
+import './GiftListCard.css'; // для скролла и базовых стилей
 
 const WS_URL = 'wss://giftasset.pro/api/v1/gifts/ws/sales_updates?api_key=test';
 
 interface GiftData {
   gift: {
     gift_id: number;
+    gift_id_str: string;
+    media: {
+      lottie_anim: string;
+      pics: {
+        large: string;
+        medium: string;
+        small: string;
+      };
+    };
     model: string;
     name: string;
+    number: number;
     rarity: number;
   };
   prices: {
@@ -27,68 +39,67 @@ interface SaleEvent {
   event: string;
 }
 
+function getTimeAgo(timestamp: number): string {
+  const now = Date.now();
+  const diff = Math.floor((now - timestamp * 1000) / 1000);
+  if (diff < 60) return `${diff} секунд назад`;
+  if (diff < 3600) return `${Math.floor(diff / 60)} минут назад`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)} часов назад`;
+  return `${Math.floor(diff / 86400)} дней назад`;
+}
+
+interface SaleEventWithTimeAgo extends SaleEvent {
+  timeAgo: string;
+}
+
 const StreamingPage: React.FC = () => {
-  const [lastEvent, setLastEvent] = useState<SaleEvent | null>(null);
+  const [events, setEvents] = useState<SaleEventWithTimeAgo[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [expandedIdx, setExpandedIdx] = useState<number>(0);
   const wsRef = useRef<WebSocket | null>(null);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     setError(null);
     const ws = new WebSocket(WS_URL);
     wsRef.current = ws;
-
-    ws.onopen = () => {
-      setError(null);
-    };
+    ws.onopen = () => setError(null);
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
         if (data.event === 'new_sale') {
-          setLastEvent(data);
+          setEvents(prev => {
+            const next = [data, ...prev];
+            const withTimeAgo = next.slice(0, 10).map(ev => ({ ...ev, timeAgo: getTimeAgo(ev.data.timestamp) }));
+            return withTimeAgo;
+          });
+          setExpandedIdx(0);
         }
       } catch (e) {
         setError('Ошибка парсинга данных');
       }
     };
-    ws.onerror = () => {
-      setError('Ошибка WebSocket соединения');
-    };
-    ws.onclose = () => {
-      setError('WebSocket соединение закрыто');
-    };
-
-    return () => {
-      ws.close();
-    };
+    ws.onerror = () => setError('Ошибка WebSocket соединения');
+    ws.onclose = () => setError('WebSocket соединение закрыто');
+    return () => ws.close();
   }, []);
 
   return (
-    <div style={{ padding: 16 }}>
-      <h2>Стриминг продаж подарков</h2>
-      <div id="streaming-content">
+    <div style={{height: '100vh', display: 'flex', flexDirection: 'column', background: '#f4f8fb'}}>
+      <div style={{position: 'sticky', top: 0, background: '#f4f8fb', zIndex: 2, padding: 16, borderBottom: '1px solid #e0e8ef'}}>
+        <h2 style={{margin: 0, color: '#222'}}>Стриминг продаж подарков</h2>
+      </div>
+      <div style={{flex: 1, overflowY: 'auto', padding: 16}}>
         {error && <div style={{ color: 'red', marginBottom: 12 }}>{error}</div>}
-        {lastEvent ? (
-          <div className="streaming-card">
-            <div className="streaming-provider">{lastEvent.data.provider}</div>
-            <div className="streaming-title">Новая продажа</div>
-            <div><span className="streaming-label">Модель:</span> {lastEvent.data.gift.model}</div>
-            <div><span className="streaming-label">Название:</span> {lastEvent.data.gift.name}</div>
-            <div><span className="streaming-label">Редкость:</span> {lastEvent.data.gift.rarity}</div>
-            <div className="streaming-label" style={{marginTop: 8}}>Цены:</div>
-            <ul>
-              <li>Collection floor: {lastEvent.data.prices.collection_floor_price} TON</li>
-              <li>Model floor: {lastEvent.data.prices.model_floor_price} TON</li>
-              <li>Sale model: {lastEvent.data.prices.sale_model_price} TON</li>
-            </ul>
-            <div><span className="streaming-label">Upgrade:</span> {lastEvent.data.upgrade.upgraded_amount} / {lastEvent.data.upgrade.total_amount}</div>
-            <div className="streaming-time">
-              Время: {new Date(lastEvent.data.timestamp * 1000).toLocaleString()}
-            </div>
-          </div>
-        ) : (
-          <p>Ожидание новых продаж...</p>
-        )}
+        {events.length === 0 && <p>Ожидание новых продаж...</p>}
+        {events.map((ev, idx) => (
+          <SaleEventCard
+            key={ev.data.gift.gift_id_str + ev.data.timestamp}
+            saleEvent={ev}
+            collapsed={idx !== expandedIdx}
+            onClick={() => setExpandedIdx(idx)}
+            timeAgo={ev.timeAgo}
+          />
+        ))}
       </div>
     </div>
   );
