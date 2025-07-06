@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { GiftPriceListResponse, CollectionFloors, ModelsPrices } from '../types';
+import { GiftPriceListResponse, CollectionFloors, ModelsPrices } from '../../types';
 
 interface GiftPriceListCardProps {
   data: GiftPriceListResponse;

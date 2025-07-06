@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import SaleEventCard from './SaleEventCard';
-import './GiftListCard.css'; // для скролла и базовых стилей
+import SaleEventCard from '../../components/SaleEventCard';
+import '../../components/GiftListCard/GiftListCard.css'; // для скролла и базовых стилей
+import './StreamingPage.css';
 
 const WS_URL = 'wss://giftasset.pro/api/v1/gifts/ws/sales_updates?api_key=test';
 
@@ -107,12 +108,12 @@ const StreamingPage: React.FC = () => {
   }, []);
 
   return (
-    <div style={{height: '100vh', display: 'flex', flexDirection: 'column', background: '#f4f8fb'}}>
-      <div style={{position: 'sticky', top: 0, background: '#f4f8fb', zIndex: 2, padding: 16, borderBottom: '1px solid #e0e8ef'}}>
-        <h2 style={{margin: 0, color: '#222'}}>Стриминг продаж подарков</h2>
+    <div className="streaming-page-root">
+      <div className="streaming-page-header">
+        <h2 className="streaming-page-header-title">Стриминг продаж подарков</h2>
       </div>
-      <div style={{flex: 1, overflowY: 'auto', padding: 16}}>
-        {error && <div style={{ color: 'red', marginBottom: 12 }}>{error}</div>}
+      <div className="streaming-page-content">
+        {error && <div className="streaming-page-error">{error}</div>}
         {events.length === 0 && <p>Ожидание новых продаж...</p>}
         {events.map((ev, idx) => (
           <SaleEventCard

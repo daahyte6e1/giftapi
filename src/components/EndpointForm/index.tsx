@@ -1,5 +1,5 @@
 import React from 'react';
-import { Endpoint } from '../types/index';
+import { Endpoint } from '../../types';
 
 interface EndpointFormProps {
   endpoint: Endpoint;

@@ -1,6 +1,6 @@
 import React from 'react';
 import './SaleEventCard.css';
-import TonIcon from './TonIcon';
+import TonIcon from '../TonIcon';
 
 interface SaleEventCardProps {
   saleEvent: any;

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Endpoint } from '../types/index';
+import { Endpoint } from '../../types';
 import './EndpointCard.css';
-import GetGiftByNameCard from './GetGiftByNameCard';
-import GetGiftByUserCard from './GetGiftByUserCard';
-import GetGiftsPriceListCard from './GetGiftsPriceListCard';
+import GetGiftByNameCard from '../GetGiftByNameCard';
+import GetGiftByUserCard from '../GetGiftByUserCard';
+import GetGiftsPriceListCard from '../GetGiftsPriceListCard';
 
 interface EndpointCardProps {
   endpoint: Endpoint;

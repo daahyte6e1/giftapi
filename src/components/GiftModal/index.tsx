@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import Lottie from 'lottie-react';
-import { Collectible } from '../types';
+import { Collectible } from '../../types';
 import './GiftModal.css';
 
 interface GiftModalProps {

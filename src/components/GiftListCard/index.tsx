@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Collectible } from '../types';
-import GiftModal from './GiftModal';
+import { Collectible } from '../../types';
+import GiftModal from '../GiftModal';
 import './GiftListCard.css';
 
 interface GiftListResponse {

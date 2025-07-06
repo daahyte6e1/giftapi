@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Endpoint, Collectible } from '../types';
-import GiftListCard from './GiftListCard';
-import JsonResponseCard from './JsonResponseCard';
+import { Endpoint, Collectible } from '../../types';
+import GiftListCard from '../GiftListCard';
+import JsonResponseCard from '../JsonResponseCard';
 
 interface GetGiftByUserCardProps {
   endpoint: Endpoint;

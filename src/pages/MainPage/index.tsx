@@ -1,6 +1,6 @@
 import React from 'react';
-import EndpointCard from './EndpointCard';
-import { Endpoint } from '../types';
+import EndpointCard from '../../components/EndpointCard';
+import { Endpoint } from '../../types';
 
 const endpoints: Endpoint[] = [
   {

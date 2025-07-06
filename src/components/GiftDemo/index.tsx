@@ -1,6 +1,6 @@
 import React from 'react';
-import { Collectible } from '../types';
-import GiftListCard from './GiftListCard';
+import { Collectible } from '../../types';
+import GiftListCard from '../GiftListCard';
 import './GiftDemo.css';
 
 const GiftDemo: React.FC = () => {

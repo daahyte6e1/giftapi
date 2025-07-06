@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Lottie from 'lottie-react';
 import './SingleGiftCard.css';
-import { Collectible } from '../types/index';
+import { Collectible } from '../../types';
 
 
 interface SingleGiftCardProps {

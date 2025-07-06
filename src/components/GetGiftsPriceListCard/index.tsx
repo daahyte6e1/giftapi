@@ -1,28 +1,26 @@
 import React, { useState } from 'react';
-import { Endpoint } from '../types';
-import SingleGiftCard from './SingleGiftCard';
-import JsonResponseCard from './JsonResponseCard';
+import { Endpoint } from '../../types';
+import GiftPriceListCard from '../GiftPriceListCard';
+import JsonResponseCard from '../JsonResponseCard';
 
-interface GetGiftByNameCardProps {
+interface GetGiftsPriceListCardProps {
   endpoint: Endpoint;
 }
 
-const GetGiftByNameCard: React.FC<GetGiftByNameCardProps> = ({ endpoint }) => {
-  const [name, setName] = useState('EasterEgg-1');
+const GetGiftsPriceListCard: React.FC<GetGiftsPriceListCardProps> = ({ endpoint }) => {
+  const [models, setModels] = useState('false');
   const [loading, setLoading] = useState(false);
   const [singleGift, setSingleGift] = useState<any>({});
   const [error, setError] = useState<string>('');
 
   const handleSubmit = async () => {
-    if (!name.trim()) {
-      setError('Пожалуйста, введите имя');
-      return;
-    }
     setLoading(true);
     setError('');
     setSingleGift({});
     try {
-      const url = `${endpoint.url}?name=${encodeURIComponent(name)}`;
+      const params = new URLSearchParams();
+      params.append('models', models);
+      const url = `${endpoint.url}?${params.toString()}`;
       const result = await fetch(url, {
         signal: AbortSignal.timeout(20000),
         headers: {
@@ -58,14 +56,13 @@ const GetGiftByNameCard: React.FC<GetGiftByNameCardProps> = ({ endpoint }) => {
         </div>
       </div>
       <div className="endpoint-form">
-        <div className="input-group">
-          <label htmlFor={`name-${endpoint.id}`}>Имя подарка:</label>
+        <div className="input-group" style={{display: 'flex'}}>
+          <label style={{width: '70%'}} htmlFor={`models-${endpoint.id}`}>Включить вложенные модели:</label>
           <input
-            id={`name-${endpoint.id}`}
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="Введите имя подарка. Например: EasterEgg-1"
+            id={`models-${endpoint.id}`}
+            type="checkbox"
+            checked={models === 'true'}
+            onChange={e => setModels(e.target.checked ? 'true' : 'false')}
             disabled={loading}
           />
         </div>
@@ -85,11 +82,11 @@ const GetGiftByNameCard: React.FC<GetGiftByNameCardProps> = ({ endpoint }) => {
       {Object.keys(singleGift).length > 0 && (
         <>
           <JsonResponseCard data={singleGift} />
-          <SingleGiftCard collectible={singleGift} />
+          <GiftPriceListCard data={singleGift} />
         </>
       )}
     </div>
   );
 };
 
-export default GetGiftByNameCard; 
+export default GetGiftsPriceListCard; 

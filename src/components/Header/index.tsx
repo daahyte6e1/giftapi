@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import './GiftDemo.css'; // Для базовых стилей, если нужно
+// import './GiftDemo.css'; // Для базовых стилей, если нужно
 
 const Header: React.FC = () => {
   const navigate = useNavigate();
